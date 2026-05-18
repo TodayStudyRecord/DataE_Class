@@ -1,0 +1,81 @@
+-- 커서01(https://coding-factory.tistory.com/455)
+
+select * from usertbl;
+
+declare 
+    userid usertbl.userid%TYPE;
+    birthyear usertbl.birthyear%TYPE;
+    CURSOR CUR_01
+    IS
+    select 
+    userid,birthyear 
+    from 
+    usertbl;
+begin
+ open CUR_01;   -- 커서열기
+ Loop
+    Fetch CUR_01 into userid,birthyear;   -- 커서에서 데이터 가져오기
+    exit when CUR_01 %NOTFOUND; --커서가 없을 경우 종료
+    DBMS_OUTPUT.PUT_LINE(userid||' '||birthyear);
+ end Loop;
+ CLOSE CUR_01;  --커서닫기
+end;
+
+
+--02 커서 + IF문
+declare 
+    userid usertbl.userid%TYPE;
+    birthyear usertbl.birthyear%TYPE;
+    CURSOR CUR_01
+    IS
+    select 
+    userid,birthyear 
+    from 
+    usertbl;
+begin
+ open CUR_01;   -- 커서열기
+ Loop
+    Fetch CUR_01 into userid,birthyear;   -- 커서에서 데이터 가져오기
+    exit when CUR_01 %NOTFOUND; --커서가 없을 경우 종료
+    if birthyear>=1970 then
+        DBMS_OUTPUT.PUT_LINE(userid||' '||birthyear);
+    end if;
+ end Loop;
+ CLOSE CUR_01;  --커서닫기
+end;
+
+-- 커서 + if + 테이블 저장
+drop table tmp2_tbl;
+create table tmp2_tbl as select userid,birthyear from usertbl where 1=2;
+select * from tmp2_tbl;
+desc tmp2_tbl;
+
+declare 
+    userid usertbl.userid%TYPE;
+    birthyear usertbl.birthyear%TYPE;
+    CURSOR CUR_01
+    IS
+    select 
+    userid,birthyear 
+    from 
+    usertbl;
+begin
+ open CUR_01;   -- 커서열기
+ Loop
+    Fetch CUR_01 into userid,birthyear;   -- 커서에서 데이터 가져오기
+    exit when CUR_01 %NOTFOUND; --커서가 없을 경우 종료
+    if birthyear>=1970 then
+        insert into tmp2_tbl values(userid,birthyear);
+    end if;
+ end Loop;
+ CLOSE CUR_01;  --커서닫기
+end;
+
+select * from tmp2_tbl;
+
+select * from buytbl;
+
+-- 커서를 만들어서 price*amount가 500이하인 groupname과 prodname을 
+-- tmp3_tbl(prodname,groupname)에 저장하세요
+-- 커서명 : CUR_02
+-- tmp3_tbl의 열은 buytbl의 prodname,groupname을 테이블 복사로 처리합니다(구조만 복사)

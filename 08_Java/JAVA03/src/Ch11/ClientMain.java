@@ -1,0 +1,68 @@
+package Ch11;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+
+public class ClientMain {
+
+	public static void main(String[] args) throws UnknownHostException, IOException {
+		//
+		Socket server = new Socket("192.168.5.14",7000);
+		System.out.println("[CLIENT] SERVER와의 연결이 완료되었습니다");
+		
+		//
+		InputStream in = server.getInputStream();
+		OutputStream out = server.getOutputStream();
+		
+		//
+		DataInputStream din = new DataInputStream(in);
+		DataOutputStream dout = new DataOutputStream(out);
+		
+		//
+		Scanner sc = new Scanner(System.in);	//키보드입력
+		String send = null; 	// 송신용
+		String recv = null; 	// 수신용
+		
+		//
+		//
+		while(true) {
+			//Server->Client(수신) - 
+			try {
+				recv = din.readUTF();
+			}catch(EOFException e){
+				System.out.println("[ERROR] 서버가 연결을 끊었습니다.");
+				break;
+			}
+			if(recv.equals("q"))
+				break;
+			System.out.println("[SERVER] : "+recv);
+			
+			
+			System.out.print("[CLIENT (q:종료)] : ");
+			send = sc.nextLine();
+			//Client->Server(송신)
+			dout.writeUTF(send);
+			dout.flush();
+			if(send.equals("q"))
+				break;
+
+		}
+		
+		sc.close();
+		dout.close();
+		din.close();
+		out.close();
+		in.close();
+		server.close();
+		System.out.println("[CLIENT] 연결 종료합니다");
+		
+	}
+
+}
