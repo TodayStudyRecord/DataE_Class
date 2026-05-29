@@ -11,17 +11,18 @@
 
     <form action="/memo/add" method="POST">
         <div>
-            <label></label>
-            <input name="tittle" />
+            <label>제목</label>
+            <input name="title" />
         </div>
         <div>
-            <label>내용</label>
-            <textarea name="text"></textarea>
+             <label>내용</label>
+             <textarea name="text"></textarea>
         </div>
         <div>
             <input type="submit" value="저장" />
         </div>
     </form>
+
 
 </body>
 </html>
